@@ -20,7 +20,7 @@ function calculateStats(type: AV, samples: SubscriberStats[]): QualityStats[] {
 
       const packetsReceived = currStat[type].packetsReceived;
       const packetsLost = currStat[type].packetsLost;
-      const packetLossRatio = packetsLost / packetsReceived;
+      const packetLossRatio = packetsLost / (packetsLost + packetsReceived);
 
       const frameRate = type === 'video' ? { frameRate: currStat[type].frameRate } : {};
 
