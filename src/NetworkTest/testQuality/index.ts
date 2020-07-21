@@ -274,7 +274,7 @@ function checkSubscriberQuality(
 
             const processResults = () => {
               const audioVideoResults: QualityTestResults = buildResults(builder);
-              if (!audioOnly && !isAudioQualityAcceptable(audioVideoResults)) {
+              if (!audioOnly && !isAudioQualityAcceptable(audioVideoResults) && !stopTestCalled) {
                 audioOnly = true;
                 // We don't want to lose the videoResults.
                 const videoResults = audioVideoResults.video;
@@ -369,7 +369,16 @@ export function testQuality(
 
     validateBrowser()
       .then(() => {
-        const session = OT.initSession(credentials.apiKey, credentials.sessionId);
+        let sessionOptions: OT.InitSessionOptions = {};
+        if (options && options.initSessionOptions) {
+          sessionOptions = options.initSessionOptions
+        }
+        if (options && options.proxyServerUrl) {
+          if (!OT.hasOwnProperty('setProxyUrl')) { // Fallback for OT.version < 2.17.4
+            sessionOptions.proxyUrl = options.proxyServerUrl;
+          }
+        }
+        const session = OT.initSession(credentials.apiKey, credentials.sessionId, sessionOptions);
         checkSubscriberQuality(OT, session, credentials, options, onUpdate)
           .then(onSuccess)
           .catch(onError);
