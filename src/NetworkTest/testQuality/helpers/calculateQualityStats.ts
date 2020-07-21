@@ -18,17 +18,14 @@ function calculateStats(type: AV, samples: SubscriberStats[]): QualityStats[] {
       const secondsElapsed = msIncreased / 1000;
       const averageBitrate = bitsIncreased / secondsElapsed;
 
-      // packetsLosts and total expected packets from current stats
-      const currentPacketsLost = currStat[type].packetsLost;
-      const currentTotalPackets = currStat[type].packetsLost + currStat[type].packetsReceived;
-
-      // packetsLosts and total expected packets from previous stats
-      const prevPacketsLost = prevStat[type].packetsLost;
-      const prevTotalPackets = prevStat[type].packetsLost + prevStat[type].packetsReceived;
-
       // Calculate packetLossRatio
-      const totalPackets = currentTotalPackets - prevTotalPackets;
-      const packetLossRatio = (currentPacketsLost - prevPacketsLost) / totalPackets;
+      const packetsReceived = currStat[type].packetsReceived;
+      const packetsLost = currStat[type].packetsLost;
+      const totalExpectedPackets = packetsLost + packetsReceived;
+      let packetLossRatio = 0;
+      if (totalExpectedPackets > 0) {
+        packetLossRatio = packetsLost / totalExpectedPackets;
+      }
 
       const frameRate = type === 'video' ? { frameRate: currStat[type].frameRate } : {};
 
