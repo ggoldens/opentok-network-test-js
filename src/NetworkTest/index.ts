@@ -93,8 +93,7 @@ export default class NetworkTest {
       source: window.location.href,
       clientVersion: 'js-network-test-' + version,
       name: 'opentok-network-test',
-      componentId: 'opentok-network-test'
-    }, {
+      componentId: 'opentok-network-test',
       proxyUrl
     });
   }
